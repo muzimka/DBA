@@ -4,40 +4,23 @@ SELECT
   pi.article,
   pi.price,
   pi.prev_price,
-  br.label AS brand,
-  tp.label AS category
+  pt.label AS category,
+  pb.label AS brand
 FROM product_items pi
-  INNER JOIN
-  product_type tp ON ( pi.type_id = tp.id )
-  INNER JOIN
-  product_brand br ON ( pi.brand_id = br.id )
-ORDER BY pi.id;
+  LEFT OUTER JOIN
+  product_type pt ON ( pi.type_id = pt.id )
+  LEFT OUTER JOIN product_brand pb ON ( pi.brand_id = pb.id );
 
-
-SELECT
-  pi.id    AS product_id,
-  pi.article,
-  pi.price,
-  pi.prev_price,
-  br.label AS brand,
-  tp.label AS category
-FROM
-  product_items AS pi,
-  product_brand AS br,
-  product_type  AS tp
-WHERE pi.brand_id = br.id AND pi.type_id= tp.id
-ORDER BY pi.id;
 
 /*------2 Выберут все товары, бренд которых начинается на букву "А"---------*/
 
 SELECT
-  p.id,
-  p.article,
-  p.price,
-  br.label AS brand
-FROM product_items AS p, product_brand AS br
-WHERE
-  br.label LIKE 'Б%';
+  pi.id,
+  pb.label
+FROM product_items pi
+  INNER JOIN product_brand pb
+    ON pb.label LIKE 'Б%' AND
+       pi.brand_id = pb.id;
 
 /*-----3 Выведут список категорий и число товаров в каждой--------*/
 
@@ -48,23 +31,54 @@ SELECT
     WHERE product_items.type_id = pt.id
   )                     AS total,
   'товаров в категории' AS comment,
-  label                  category
+  label                    category
 FROM product_type pt;
 
 
 /*-----4 Выберут для каждой категории список брендов товаров, входящих в нее--------*/
 
+--
+--cost 393694.0  --
+
+SELECT
+  'В категорию',
+  pt.label AS type,
+  'входит брэнд',
+  pb.label AS brand
+FROM product_items pi
+  INNER JOIN product_type pt ON pi.type_id = pt.id
+  INNER JOIN product_brand pb ON pi.brand_id = pb.id
+GROUP BY pt.label, pb.label;
+
+-- cost 8273384.0
+
 SELECT DISTINCT
-  'В категории' AS    comment,
-  label               category,
+  'В категории' AS          comment,
+  label                     category,
   'участвует производитель' br_comment,
   (
     SELECT label
     FROM product_brand
-WHERE product_brand.id = pi.brand_id
-)               AS    brand
+    WHERE product_brand.id = pi.brand_id
+  )             AS          brand
 FROM
   product_type prt,
   product_items pi
-WHERE pi.type_id = prt.id
+WHERE pi.type_id = prt.id;
+
+--
+-- costs 550873.0
+--
+
+SELECT
+  'В категорию',
+  pt.label,
+  'входит брэнд',
+  pb.label
+FROM product_items pi, product_type pt, product_brand pb
+WHERE pi.type_id = pt.id AND pi.brand_id = pb.id
+GROUP BY (pt.label, pb.label);
+
+
+
 
