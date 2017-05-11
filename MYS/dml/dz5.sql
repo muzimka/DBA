@@ -131,7 +131,7 @@ ORDER BY cb.label;
   */
 
 --
--- дата включает время, поэтому группировка идет по дате + время
+--
 --
 SELECT
   date_format( o.dt, get_format( DATE, 'ISO' ) ) AS date,
