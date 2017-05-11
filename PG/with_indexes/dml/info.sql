@@ -27,6 +27,11 @@ LIMIT 1;
 use lesson3;
 SELECT *
 FROM product_items;
+
+SELECT count(id)
+FROM product_items where quantity =0;
+
+
 SELECT *
 FROM product_brand;
 SELECT *

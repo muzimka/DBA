@@ -1,6 +1,6 @@
 BEGIN;
 CREATE TABLE IF NOT EXISTS product_type (
-  id    INTEGER COLUMN_FORMAT FIXED AUTO_INCREMENT PRIMARY KEY UNIQUE NOT NULL,
+  id    INTEGER AUTO_INCREMENT PRIMARY KEY UNIQUE NOT NULL,
   label CHAR(50)                                                      NOT NULL
 );
 

@@ -1,0 +1,8 @@
+START TRANSACTION;
+
+INSERT INTO db_version (version) VALUES ( 004 );
+DROP TABLE IF EXISTS order_items;
+DROP TABLE IF EXISTS orders;
+
+COMMIT;
+
